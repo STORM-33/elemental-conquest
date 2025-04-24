@@ -20,7 +20,7 @@ const BIOME_DATA = {
 		"name": "Grassland",
 		"top_color": Color(0.2, 0.8, 0.2),
 		"side_color": Color(0.1, 0.1, 0.1),
-		"tree_color": Color(0.1, 0.6, 0.1),
+		"tree_color": Color(0.1, 0.1, 0.1),
 		"tree_chance": 0.7,
 		"elevation": 0.0
 	},
@@ -28,7 +28,7 @@ const BIOME_DATA = {
 		"name": "Desert",
 		"top_color": Color(1.0, 0.85, 0.4),
 		"side_color": Color(0.1, 0.1, 0.1),
-		"tree_color": Color(0.7, 0.5, 0.2),
+		"tree_color": Color(0.1, 0.1, 0.1),
 		"tree_chance": 0.2,
 		"elevation": 0.0
 	},
@@ -36,7 +36,7 @@ const BIOME_DATA = {
 		"name": "Snow",
 		"top_color": Color(0.9, 0.9, 1.0),
 		"side_color": Color(0.1, 0.1, 0.1),
-		"tree_color": Color(0.5, 0.7, 0.8),
+		"tree_color": Color(0.4, 0.4, 0.4),
 		"tree_chance": 0.4,
 		"elevation": 0.0
 	},
@@ -44,7 +44,7 @@ const BIOME_DATA = {
 		"name": "Mountains",
 		"top_color": Color(0.4, 0.1, 0.1),
 		"side_color": Color(0.1, 0.1, 0.1),
-		"tree_color": Color(0.35, 0.15, 0.1),
+		"tree_color": Color(0.4, 0.1, 0.1),
 		"tree_chance": 0.3,
 		"elevation": 0.0
 	}
