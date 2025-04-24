@@ -6,7 +6,7 @@
 script = ExtResource("1_o5qli")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 3, 7, 9)
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 3, 10, 13)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.0267872, -0.798257, -0.601721, 0.0355014, -0.602317, 0.797467, -0.999011, -3.73116e-08, 0.0444737, -18.6671, 16.2104, 0.878454)

@@ -2,10 +2,9 @@ extends Node3D
 
 @onready var trees := $Trees
 
-func set_color(color: Color, y_offset := 0):
-	trees.position.y = y_offset
+func set_color(color: Color):
 
-	for child in get_children():
+	for child in trees.get_children():
 		if child is MeshInstance3D:
 			var mat := StandardMaterial3D.new()
 			mat.albedo_color = color
