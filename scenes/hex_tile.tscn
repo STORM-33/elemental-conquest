@@ -8,6 +8,7 @@ transparency = 1
 albedo_color = Color(0.498296, 0.594201, 0.378835, 1)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_xon6g"]
+lightmap_size_hint = Vector2i(17, 10)
 material = SubResource("StandardMaterial3D_7itk4")
 height = 0.25
 radial_segments = 6
@@ -16,7 +17,7 @@ radial_segments = 6
 script = ExtResource("1_xon6g")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transparency = 0.08
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 0, 0, 0)
 lod_bias = 0.001
 mesh = SubResource("CylinderMesh_xon6g")
 
