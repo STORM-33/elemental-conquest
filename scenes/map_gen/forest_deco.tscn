@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://grmuk28pqgrq"]
 
-[ext_resource type="PrismMesh" uid="uid://d15edg0w1858m" path="res://scenes/prism.tres" id="1_5a7sv"]
-[ext_resource type="Script" uid="uid://dssc3b2aphu5u" path="res://scenes/forest_deco.gd" id="1_gv6v2"]
+[ext_resource type="PrismMesh" uid="uid://d15edg0w1858m" path="res://scenes/map_gen/prism.tres" id="1_5a7sv"]
+[ext_resource type="Script" uid="uid://dssc3b2aphu5u" path="res://scenes/map_gen/forest_deco.gd" id="1_gv6v2"]
 
 [node name="ForestDeco" type="Node3D"]
 script = ExtResource("1_gv6v2")
