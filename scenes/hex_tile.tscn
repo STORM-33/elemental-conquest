@@ -1,0 +1,30 @@
+[gd_scene load_steps=5 format=3 uid="uid://b4q1sgtkxb4xg"]
+
+[ext_resource type="Script" uid="uid://cj05vpf2puggc" path="res://scenes/hex_tile.gd" id="1_xon6g"]
+[ext_resource type="PackedScene" uid="uid://grmuk28pqgrq" path="res://scenes/forest_deco.tscn" id="2_8oknp"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7itk4"]
+transparency = 1
+albedo_color = Color(0.498296, 0.594201, 0.378835, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_xon6g"]
+material = SubResource("StandardMaterial3D_7itk4")
+height = 0.25
+radial_segments = 6
+
+[node name="HexTile" type="Node3D"]
+script = ExtResource("1_xon6g")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transparency = 0.08
+lod_bias = 0.001
+mesh = SubResource("CylinderMesh_xon6g")
+
+[node name="ForestDeco" parent="." instance=ExtResource("2_8oknp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.260245, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.20026, 1.60239)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.631339, 0.775507, 0, -0.775507, 0.631339, 0, 0.895273, 1.60239)
