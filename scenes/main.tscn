@@ -1,14 +1,14 @@
 [gd_scene load_steps=3 format=3 uid="uid://80o7b56huhqa"]
 
-[ext_resource type="Script" uid="uid://bvxli1hufeelq" path="res://scenes/map_gen/map_gen.gd" id="1_2it1h"]
-[ext_resource type="Script" uid="uid://b68w3oo0s7bpg" path="res://scenes/camera_3d.gd" id="2_rotab"]
+[ext_resource type="Script" uid="uid://bvxli1hufeelq" path="res://scenes/main.gd" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://b68w3oo0s7bpg" path="res://scenes/camera_3d.gd" id="2_0wfyh"]
 
 [node name="Main" type="Node3D"]
-script = ExtResource("1_2it1h")
+script = ExtResource("1_o5qli")
 
 [node name="MainCamera" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 3, 10, 15)
-script = ExtResource("2_rotab")
+script = ExtResource("2_0wfyh")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.0267872, -0.798257, -0.601721, 0.0355014, -0.602317, 0.797467, -0.999011, -3.73116e-08, 0.0444737, -18.6671, 16.2104, 0.878454)

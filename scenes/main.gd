@@ -1,6 +1,6 @@
 extends Node3D
 
-const TILE_SCENE = preload("res://scenes/map_gen/hex_tile.tscn")
+const TILE_SCENE = preload("res://scenes/hex_tile.tscn")
 
 const M := 0.6
 const X_OFFSET := 1.732 * M
