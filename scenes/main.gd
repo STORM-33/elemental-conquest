@@ -65,30 +65,30 @@ func setup_noise():
 	# Main terrain noise
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	noise.seed = randi()
-	noise.frequency = 0.05
+	noise.frequency = 0.15  # Increased from 0.05
 	
 	# Moisture noise affects biome selection
 	moisture_noise.noise_type = FastNoiseLite.TYPE_PERLIN
-	moisture_noise.seed = randi()
-	moisture_noise.frequency = 0.03
+	moisture_noise.seed = randi() + 100  # Different seeds
+	moisture_noise.frequency = 0.1  # Increased from 0.03
 	
 	# Temperature noise affects biome selection
 	temperature_noise.noise_type = FastNoiseLite.TYPE_PERLIN
-	temperature_noise.seed = randi()
-	temperature_noise.frequency = 0.02
+	temperature_noise.seed = randi() + 200  # Different seeds
+	temperature_noise.frequency = 0.08  # Increased from 0.02
 
 func get_biome_at(x: int, y: int) -> int:
 	# Get elevation, moisture and temperature values from noise
-	var elevation = (noise.get_noise_2d(x * 2.5, y * 2.5) + 1) * 0.5  # 0 to 1
-	var moisture = (moisture_noise.get_noise_2d(x * 5, y * 5) + 1) * 0.5  # 0 to 1
-	var temperature = (temperature_noise.get_noise_2d(x * 3, y * 3) + 1) * 0.5  # 0 to 1
+	var elevation = (noise.get_noise_2d(x, y) + 1) * 0.5  # 0 to 1
+	var moisture = (moisture_noise.get_noise_2d(x, y) + 1) * 0.5  # 0 to 1
+	var temperature = (temperature_noise.get_noise_2d(x, y) + 1) * 0.5  # 0 to 1
 	
-	# Determine biome based on these factors
-	if elevation > 0.75:
+	# More balanced biome distribution
+	if elevation > 0.7:
 		return BiomeType.MOUNTAINS
-	elif temperature < 0.3:
+	elif temperature < 0.4:
 		return BiomeType.SNOW
-	elif moisture < 0.3 && temperature > 0.6:
+	elif moisture < 0.4 && temperature > 0.5:
 		return BiomeType.DESERT
 	else:
 		return BiomeType.GRASSLAND

@@ -12,17 +12,16 @@ func set_tile_type(new_type: String):
 	tile_type = new_type
 
 func _ready():
-	# Apply color to the tile mesh
-	var tile_material = StandardMaterial3D.new()
-	tile_material.transparency = 1
-	tile_material.albedo_color = biome_color
-	mesh_instance.material_override = tile_material
-	var tile_material2 = StandardMaterial3D.new()
-	tile_material2.transparency = 1
-	tile_material2.albedo_color = side_color
-	mesh_instance2.material_override = tile_material2
+	var top_material = StandardMaterial3D.new()
+	top_material.albedo_color = biome_color
+	mesh_instance.mesh = mesh_instance.mesh.duplicate()
+	
+	var side_material = StandardMaterial3D.new()
+	side_material.albedo_color = side_color
+	mesh_instance2.mesh = mesh_instance2.mesh.duplicate()
+	mesh_instance2.mesh.material = side_material
 	
 	# Apply color to decorations
 	var deco = $ForestDeco
-	if deco.has_method("set_color"):
+	if deco and deco.has_method("set_color"):
 		deco.set_color(biome_color)
