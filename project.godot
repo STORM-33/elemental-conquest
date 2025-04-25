@@ -15,6 +15,10 @@ run/main_scene="uid://b88kegyrexu4p"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Globals="*res://globals.gd"
+
 [input_devices]
 
 pointing/android/enable_pan_and_scale_gestures=true
