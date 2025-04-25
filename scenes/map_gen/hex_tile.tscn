@@ -10,6 +10,7 @@ albedo_color = Color(0.498296, 0.594201, 0.378835, 1)
 [sub_resource type="CylinderMesh" id="CylinderMesh_xon6g"]
 lightmap_size_hint = Vector2i(17, 10)
 material = SubResource("StandardMaterial3D_7itk4")
+top_radius = 0.48
 height = 0.25
 radial_segments = 6
 
