@@ -1,6 +1,6 @@
 extends Camera3D
 
-var sensitivity = 0.05
+var sensitivity = Globals.camera_sensitivity
 func _input(event):
 	if event is InputEventScreenDrag:
 		var rel = event.relative
