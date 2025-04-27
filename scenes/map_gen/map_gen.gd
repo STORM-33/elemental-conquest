@@ -1,6 +1,7 @@
 extends Node3D
 
 const TILE_SCENE = preload("res://scenes/map_gen/hex_tile.tscn")
+const FLAME_TOWER_SCENE = preload("res://scenes/map_gen/flame_tower.blend")
 const M := 0.6
 const X_OFFSET := 1.732 * M
 const Z_OFFSET := 1.5 * M
@@ -58,7 +59,7 @@ var biome_blend_noise = FastNoiseLite.new()  # For smoothing biome transitions
 
 # Elevation parameters
 @export var elevation_levels := 10  # Number of distinct elevation levels
-@export var elevation_per_level := 0.04  # Height increase per elevation level
+@export var elevation_per_level := 0.1  # Height increase per elevation level
 @export var elevation_noise_frequency := 0.1  # Controls how smooth or rough the elevation changes are
 
 # Biome distribution parameters
@@ -291,6 +292,13 @@ func generate_map():
 			tile.tile_type = biome.name.to_lower()
 			tile.biome_color = biome.top_color
 			tile.side_color = biome.side_color
+			
+			# Add flame tower with 10% probability
+			if randf() < 0.1:  # 10% chance
+				var flame_tower = FLAME_TOWER_SCENE.instantiate()
+				tile.add_child(flame_tower)
+				flame_tower.scale = Vector3(0.25, 0.25, 0.25)  # Set scale to 0.25
+				flame_tower.position.y = 0.35  # Set Y position to 0.35
 					
 			# Handle forest decoration
 			if tile.has_node("ForestDeco"):

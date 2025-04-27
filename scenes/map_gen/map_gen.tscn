@@ -12,4 +12,5 @@ script = ExtResource("2_rotab")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.99181, -0.00440842, 0.127646, -0.127722, -0.034233, 0.991219, 5.24678e-11, -0.999404, -0.0345157, 0, 0, 0)
+light_energy = 2.131
 shadow_enabled = true

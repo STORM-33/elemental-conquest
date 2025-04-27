@@ -1,8 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://b4q1sgtkxb4xg"]
+[gd_scene load_steps=7 format=3 uid="uid://b4q1sgtkxb4xg"]
 
 [ext_resource type="Script" uid="uid://cj05vpf2puggc" path="res://scenes/map_gen/hex_tile.gd" id="1_xon6g"]
 [ext_resource type="PackedScene" uid="uid://grmuk28pqgrq" path="res://scenes/map_gen/forest_deco.tscn" id="2_8oknp"]
-[ext_resource type="PackedScene" uid="uid://dp1xnqhnl3kqc" path="res://scenes/map_gen/flame_tower.blend" id="3_8t2hy"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7itk4"]
 transparency = 1
@@ -39,6 +38,3 @@ mesh = SubResource("CylinderMesh_grtse")
 
 [node name="ForestDeco" parent="." instance=ExtResource("2_8oknp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.260245, 0)
-
-[node name="flame_tower" parent="." instance=ExtResource("3_8t2hy")]
-transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0.35, 0)
