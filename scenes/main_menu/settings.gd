@@ -4,6 +4,10 @@ extends Control
 @onready var camSens_label = $VBoxContainer/HBoxContainer/Label
 @onready var vBox = $VBoxContainer
 func _ready():
+	vBox.anchor_top = 0
+	vBox.anchor_bottom = 1
+	vBox.anchor_left = 0.5
+	vBox.anchor_right = 0.5
 	vBox.offset_left = -Globals.screen_width/4
 	vBox.offset_right = Globals.screen_width/4
 	
