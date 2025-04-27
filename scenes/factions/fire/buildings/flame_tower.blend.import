@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://dp1xnqhnl3kqc"
-path="res://.godot/imported/flame_tower.blend-bdf0052d46a4f1f39641c8d30f12a178.scn"
+path="res://.godot/imported/flame_tower.blend-1adefa31af812cf7f2e43bf3e282ac41.scn"
 
 [deps]
 
-source_file="res://scenes/map_gen/flame_tower.blend"
-dest_files=["res://.godot/imported/flame_tower.blend-bdf0052d46a4f1f39641c8d30f12a178.scn"]
+source_file="res://scenes/factions/fire/buildings/flame_tower.blend"
+dest_files=["res://.godot/imported/flame_tower.blend-1adefa31af812cf7f2e43bf3e282ac41.scn"]
 
 [params]
 

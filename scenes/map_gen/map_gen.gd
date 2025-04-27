@@ -1,7 +1,7 @@
 extends Node3D
 
 const TILE_SCENE = preload("res://scenes/map_gen/hex_tile.tscn")
-const FLAME_TOWER_SCENE = preload("res://scenes/map_gen/flame_tower.blend")
+const FLAME_TOWER_SCENE = preload("res://scenes/factions/fire/buildings/flame_tower.blend")
 const M := 0.6
 const X_OFFSET := 1.732 * M
 const Z_OFFSET := 1.5 * M
