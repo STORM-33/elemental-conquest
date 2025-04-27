@@ -58,7 +58,7 @@ var biome_blend_noise = FastNoiseLite.new()  # For smoothing biome transitions
 
 # Elevation parameters
 @export var elevation_levels := 10  # Number of distinct elevation levels
-@export var elevation_per_level := 0.07  # Height increase per elevation level
+@export var elevation_per_level := 0.04  # Height increase per elevation level
 @export var elevation_noise_frequency := 0.1  # Controls how smooth or rough the elevation changes are
 
 # Biome distribution parameters
