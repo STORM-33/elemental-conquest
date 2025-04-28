@@ -1,40 +1,40 @@
-[gd_scene load_steps=7 format=3 uid="uid://b4q1sgtkxb4xg"]
+[gd_scene load_steps=4 format=3 uid="uid://b4q1sgtkxb4xg"]
 
-[ext_resource type="Script" uid="uid://cj05vpf2puggc" path="res://scenes/map_gen/hex_tile.gd" id="1_xon6g"]
-[ext_resource type="PackedScene" uid="uid://grmuk28pqgrq" path="res://scenes/map_gen/forest_deco.tscn" id="2_8oknp"]
+[ext_resource type="Script" path="res://scenes/map_gen/hex_tile.gd" id="1_xon6g"]
+[ext_resource type="Texture2D" path="res://assets/sprites/tileset_hex.png" id="2_m8n4p"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7itk4"]
-transparency = 1
-albedo_color = Color(0.498296, 0.594201, 0.378835, 1)
+[sub_resource type="CircleShape2D" id="CircleShape2D_a8j2v"]
+radius = 60.0
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_xon6g"]
-lightmap_size_hint = Vector2i(17, 10)
-material = SubResource("StandardMaterial3D_7itk4")
-top_radius = 0.48
-height = 0.25
-radial_segments = 6
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8oknp"]
-albedo_color = Color(0.370364, 0.370364, 0.370364, 1)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_grtse"]
-material = SubResource("StandardMaterial3D_8oknp")
-top_radius = 0.51
-bottom_radius = 0.51
-height = 0.24
-radial_segments = 6
-
-[node name="HexTile" type="Node3D"]
+[node name="HexTile" type="Node2D"]
 script = ExtResource("1_xon6g")
 
-[node name="TopColor" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 0, 0, 0)
-lod_bias = 0.001
-mesh = SubResource("CylinderMesh_xon6g")
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_m8n4p")
+hframes = 4
+vframes = 3
+frame = 2
 
-[node name="SideColor" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 0, 0, 0)
-mesh = SubResource("CylinderMesh_grtse")
+[node name="Decoration" type="Node2D" parent="."]
 
-[node name="ForestDeco" parent="." instance=ExtResource("2_8oknp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.260245, 0)
+[node name="TreeSprite" type="Sprite2D" parent="Decoration"]
+position = Vector2(0, -20)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_m8n4p")
+region_enabled = true
+region_rect = Rect2(128, 128, 64, 64)
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_a8j2v")
+
+[node name="Label" type="Label" parent="."]
+visible = false
+offset_left = -20.0
+offset_top = -10.0
+offset_right = 20.0
+offset_bottom = 13.0
+text = "0,0"
+horizontal_alignment = 1
+vertical_alignment = 1
