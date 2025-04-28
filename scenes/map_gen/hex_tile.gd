@@ -16,9 +16,9 @@ var building = null
 
 # Biome to tileset frame mapping
 const TILE_FRAMES = {
-	"grassland": 2,  # Green tile
-	"desert": 3,     # Orange/sand tile
-	"snow": 5,       # Light blue/white tile
+	"grassland": 0,  # Green tile
+	"desert": 0,     # Orange/sand tile
+	"snow": 0,       # Light blue/white tile
 	"mountains": 0   # Gray tile
 }
 
@@ -26,6 +26,10 @@ const TILE_FRAMES = {
 func _ready():
 	# Set up input
 	$Area2D.input_event.connect(_on_input_event)
+	
+	# Make label visible for debugging
+	if has_node("Label"):
+		$Label.visible = true
 	
 	# Apply initial visual settings
 	update_appearance()
@@ -44,18 +48,24 @@ func update_appearance():
 	if TILE_FRAMES.has(tile_type):
 		frame = TILE_FRAMES[tile_type]
 	
-	if sprite is Sprite2D and sprite.hframes > 1:
+	# Important: Force the frame to update
+	if sprite is Sprite2D:
 		sprite.frame = frame
+		
+		# Verify the frame was set correctly
+		print("Tile at ", grid_position, " set to frame: ", sprite.frame, " for biome: ", tile_type)
 	
-	# Apply slight tint variation based on biome color for more variety
+	# Apply slight tint variation based on biome color
 	sprite.modulate = biome_data.top_color
 	
 	# Update decorations based on biome
-	if decoration and biome_data.tree_chance > 0 and randf() < biome_data.tree_chance:
-		decoration.visible = true
-		decoration.modulate = biome_data.tree_color
-	elif decoration:
-		decoration.visible = false
+	if decoration and decoration.has_node("TreeSprite"):
+		var tree_sprite = decoration.get_node("TreeSprite")
+		if biome_data.tree_chance > 0 and randf() < biome_data.tree_chance:
+			decoration.visible = true
+			tree_sprite.modulate = biome_data.tree_color
+		else:
+			decoration.visible = false
 
 func add_building(building_scene):
 	# Remove any existing building
@@ -63,7 +73,7 @@ func add_building(building_scene):
 		building.queue_free()
 	
 	# Add new building
-	building = building_scene.instantiate()
+	building = building_scene
 	add_child(building)
 	
 	# Position building at center of hex
@@ -80,14 +90,16 @@ func select():
 	tween.tween_property(sprite, "scale", Vector2(1.1, 1.1), 0.1)
 	tween.tween_property(sprite, "scale", Vector2(1.0, 1.0), 0.1)
 	
-	# Print selection info instead of calling a function that might not exist
+	# Print selection info
 	print("Tile selected: ", grid_position, " Type: ", tile_type)
 	
-	# Find the map generator parent to call its function
-	var parent = get_parent()
-	while parent and not parent.has_method("tile_selected"):
-		parent = parent.get_parent()
+	# Try to find the direct ancestor with the tile_selected method
+	var current = self
+	while current:
+		current = current.get_parent()
+		if current and current.has_method("tile_selected"):
+			current.tile_selected(self)
+		return
 	
-	# If we found a parent with the method, call it
-	if parent and parent.has_method("tile_selected"):
-		parent.tile_selected(self)
+	# If we get here, we didn't find a parent with tile_selected
+	print("Warning: Could not find parent with tile_selected method")

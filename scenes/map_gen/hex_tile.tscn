@@ -1,10 +1,10 @@
 [gd_scene load_steps=4 format=3 uid="uid://b4q1sgtkxb4xg"]
 
-[ext_resource type="Script" path="res://scenes/map_gen/hex_tile.gd" id="1_xon6g"]
-[ext_resource type="Texture2D" path="res://assets/sprites/tileset_hex.png" id="2_m8n4p"]
+[ext_resource type="Script" uid="uid://cj05vpf2puggc" path="res://scenes/map_gen/hex_tile.gd" id="1_xon6g"]
+[ext_resource type="Texture2D" uid="uid://bhyssk785h2sq" path="res://assets/sprites/tileset_hex.png" id="2_m8n4p"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_a8j2v"]
-radius = 60.0
+radius = 32.0
 
 [node name="HexTile" type="Node2D"]
 script = ExtResource("1_xon6g")
@@ -18,11 +18,11 @@ frame = 2
 [node name="Decoration" type="Node2D" parent="."]
 
 [node name="TreeSprite" type="Sprite2D" parent="Decoration"]
-position = Vector2(0, -20)
-scale = Vector2(0.5, 0.5)
+position = Vector2(0, -10)
+scale = Vector2(0.3, 0.3)
 texture = ExtResource("2_m8n4p")
 region_enabled = true
-region_rect = Rect2(128, 128, 64, 64)
+region_rect = Rect2(32, 64, 32, 32)
 
 [node name="Area2D" type="Area2D" parent="."]
 
@@ -30,7 +30,6 @@ region_rect = Rect2(128, 128, 64, 64)
 shape = SubResource("CircleShape2D_a8j2v")
 
 [node name="Label" type="Label" parent="."]
-visible = false
 offset_left = -20.0
 offset_top = -10.0
 offset_right = 20.0

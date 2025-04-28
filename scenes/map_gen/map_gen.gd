@@ -76,6 +76,9 @@ func _ready():
 	
 	# Generate the map
 	generate_map()
+	
+	# Debug output
+	print("Map generation complete. Tile count: ", total_tiles)
 
 func setup_noise():
 	# Main terrain noise
@@ -170,55 +173,69 @@ func get_biome_at(x: int, y: int) -> int:
 	return BiomeType.GRASSLAND
 
 func generate_map():
-	# Set up the tile container
-	var tile_container = $TileContainer
-	if not tile_container:
-		tile_container = Node2D.new()
+	# Clear any existing tiles
+	if $TileContainer:
+		for child in $TileContainer.get_children():
+			child.queue_free()
+	else:
+		var tile_container = Node2D.new()
 		tile_container.name = "TileContainer"
 		add_child(tile_container)
 	
-	# First pass: count total tiles
+	# Reset biome counts
+	for biome in BiomeType.values():
+		biome_counts[biome] = 0
+	
+	# Calculate total tiles
 	total_tiles = map_size.x * map_size.y
 	
-	# Hexagon dimensions
-	var hex_width = Globals.HEX_WIDTH * 0.75
-	var hex_height = Globals.HEX_HEIGHT
+	# Hex grid dimensions
+	var hex_width = 36  # Fixed width between centers
+	var hex_height = 32  # Fixed height between centers
 	
-	# Second pass: generate actual tiles
+	# Offset to center the map
+	var start_x = 50
+	var start_y = 50
+	
+	# Generate tiles
 	for y in range(map_size.y):
 		for x in range(map_size.x):
+			# Create tile instance
 			var tile = TILE_SCENE.instantiate()
-			tile_container.add_child(tile)
+			$TileContainer.add_child(tile)
 			
-			# Position the tile in a hexagonal grid pattern
-			# For odd rows, offset the x position
-			var pos_x = x * hex_width
-			if y % 2 == 1:  # Offset odd rows (y is odd)
+			# Calculate position with offset for odd rows
+			var pos_x = start_x + x * hex_width
+			var pos_y = start_y + y * hex_height
+			
+			# Offset odd rows
+			if y % 2 == 1:
 				pos_x += hex_width / 2
-			
-			var pos_y = y * (hex_height * 0.75)  # Slightly overlap rows vertically
 			
 			tile.position = Vector2(pos_x, pos_y)
 			tile.grid_position = Vector2i(x, y)
 			
-			# Store tile in the grid
+			# Store in grid
 			if not tile_grid.has(y):
 				tile_grid[y] = {}
 			tile_grid[y][x] = tile
 			
-			# Determine the biome
+			# Determine biome and set properties
 			var biome_type = get_biome_at(x, y)
 			var biome = BIOME_DATA[biome_type]
-			
-			# Count biome for tracking
 			biome_counts[biome_type] += 1
-			
-			# Set tile properties
 			tile.set_biome(biome)
 			
 			# Show coordinates for debugging
 			if tile.has_node("Label"):
-				tile.get_node("Label").text = str(x) + "," + str(y)
+				var label = tile.get_node("Label")
+				label.visible = false  # Set to true for debugging
+				label.text = str(x) + "," + str(y)
+	
+	# Position camera to see the whole map
+	var map_width = map_size.x * hex_width
+	var map_height = map_size.y * hex_height
+	$Camera2D.position = Vector2(start_x + map_width/2, start_y + map_height/2)
 	
 	# Print biome distribution statistics
 	print("Biome Distribution:")
@@ -231,13 +248,13 @@ func generate_map():
 func tile_selected(tile):
 	# Handle tile selection
 	if selected_tile:
-		# Deselect previous tile (visual reset would be here)
+		# Deselect previous tile if needed
 		pass
 	
 	selected_tile = tile
 	print("Tile selected: ", tile.grid_position, " Type: ", tile.tile_type)
 	
-	# Example of showing some UI information about the selected tile
+	# Show UI info panel
 	if has_node("UI/TileInfo"):
 		var info_panel = get_node("UI/TileInfo")
 		info_panel.visible = true
