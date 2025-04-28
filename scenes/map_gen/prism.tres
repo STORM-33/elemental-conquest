@@ -1,4 +1,4 @@
-[gd_resource type="PrismMesh" load_steps=2 format=3 uid="uid://d15edg0w1858m"]
+[gd_resource type="PrismMesh" load_steps=2 format=3 uid="uid://nitdt72qehco"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_x7j4x"]
 albedo_color = Color(0.366595, 0.366595, 0.366595, 1)

@@ -10,14 +10,21 @@ config_version=5
 
 [application]
 
-config/name="elemental-conquest-"
-run/main_scene="uid://b88kegyrexu4p"
+config/name="Elemental Conquest 2D"
+run/main_scene="res://scenes/main_menu/main_menu.tscn"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Globals="*res://globals.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep_height"
 
 [input_devices]
 
@@ -28,3 +35,4 @@ pointing/emulate_mouse_from_touch=false
 [rendering]
 
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true

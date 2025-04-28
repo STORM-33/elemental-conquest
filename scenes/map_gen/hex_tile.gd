@@ -1,60 +1,93 @@
-extends Node3D
+extends Node2D
 
+# Tile type and position
 @export var tile_type: String = "grass"
 @export var grid_position: Vector2i
 
-var _biome_color := Color(0, 0, 0)
-var _side_color := Color(0, 0, 0)
+# Biome properties
+var biome_data = null
 
-@export var biome_color: Color:
-	get:
-		return _biome_color
-	set(value):
-		_biome_color = value
-		_update_top_color()
+# Visual representation
+@onready var sprite = $Sprite2D
+@onready var decoration = $Decoration
 
-@export var side_color: Color:
-	get:
-		return _side_color
-	set(value):
-		_side_color = value
-		_update_side_color()
+# Optional building reference
+var building = null
 
-@onready var mesh_instance := $TopColor
-@onready var mesh_instance2 := $SideColor
+# Biome to tileset frame mapping
+const TILE_FRAMES = {
+	"grassland": 2,  # Green tile
+	"desert": 3,     # Orange/sand tile
+	"snow": 5,       # Light blue/white tile
+	"mountains": 0   # Gray tile
+}
 
-func set_tile_type(new_type: String):
-	tile_type = new_type
-
+# Click detection
 func _ready():
-	call_deferred("_update_colors")
+	# Set up input
+	$Area2D.input_event.connect(_on_input_event)
 	
-	var deco = $ForestDeco
-	if deco and deco.has_method("set_color"):
-		deco.set_color(_biome_color)
+	# Apply initial visual settings
+	update_appearance()
 
-func _update_colors():
-	_update_top_color()
-	_update_side_color()
+func set_biome(new_biome_data):
+	biome_data = new_biome_data
+	tile_type = biome_data.name.to_lower()
+	update_appearance()
 
-func _update_top_color():
-	if not is_instance_valid(mesh_instance):
+func update_appearance():
+	if not is_instance_valid(sprite) or not biome_data:
 		return
-		
-	var mat = mesh_instance.material_override
-	if not mat:
-		mat = StandardMaterial3D.new()
-		mesh_instance.material_override = mat
 	
-	mat.albedo_color = _biome_color
+	# Set the appropriate frame from the tileset based on tile type
+	var frame = 0  # default frame
+	if TILE_FRAMES.has(tile_type):
+		frame = TILE_FRAMES[tile_type]
+	
+	if sprite is Sprite2D and sprite.hframes > 1:
+		sprite.frame = frame
+	
+	# Apply slight tint variation based on biome color for more variety
+	sprite.modulate = biome_data.top_color
+	
+	# Update decorations based on biome
+	if decoration and biome_data.tree_chance > 0 and randf() < biome_data.tree_chance:
+		decoration.visible = true
+		decoration.modulate = biome_data.tree_color
+	elif decoration:
+		decoration.visible = false
 
-func _update_side_color():
-	if not is_instance_valid(mesh_instance2):
-		return
-		
-	var mat = mesh_instance2.material_override
-	if not mat:
-		mat = StandardMaterial3D.new()
-		mesh_instance2.material_override = mat
+func add_building(building_scene):
+	# Remove any existing building
+	if building:
+		building.queue_free()
 	
-	mat.albedo_color = _side_color
+	# Add new building
+	building = building_scene.instantiate()
+	add_child(building)
+	
+	# Position building at center of hex
+	building.position = Vector2.ZERO
+
+func _on_input_event(_viewport, event, _shape_idx):
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		# Handle tile selection
+		select()
+
+func select():
+	# Visual feedback for selection
+	var tween = create_tween()
+	tween.tween_property(sprite, "scale", Vector2(1.1, 1.1), 0.1)
+	tween.tween_property(sprite, "scale", Vector2(1.0, 1.0), 0.1)
+	
+	# Print selection info instead of calling a function that might not exist
+	print("Tile selected: ", grid_position, " Type: ", tile_type)
+	
+	# Find the map generator parent to call its function
+	var parent = get_parent()
+	while parent and not parent.has_method("tile_selected"):
+		parent = parent.get_parent()
+	
+	# If we found a parent with the method, call it
+	if parent and parent.has_method("tile_selected"):
+		parent.tile_selected(self)
