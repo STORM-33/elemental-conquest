@@ -9,6 +9,6 @@ var camera_sensitivity = 1.0
 @onready var screen_height = screen_size.y
 
 # Hex grid constants - adjusted for 2D tiles
-const HEX_SIZE = 64  # Size of hexagon in pixels (radius)
-const HEX_WIDTH = 64  # Width of a hex tile (point-to-point)
-const HEX_HEIGHT = 64  # Height of a hex tile (flat-to-flat)
+const HEX_SIZE = 16  # Size of hexagon in pixels (radius)
+const HEX_WIDTH = 32  # Width of a hex tile (point-to-point)
+const HEX_HEIGHT = 32  # Height of a hex tile (flat-to-flat)

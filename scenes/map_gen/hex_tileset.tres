@@ -1,9 +1,12 @@
-[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://7mm2mgr6261w"]
+[gd_resource type="TileSet" load_steps=5 format=3 uid="uid://7mm2mgr6261w"]
 
 [ext_resource type="Texture2D" uid="uid://bhyssk785h2sq" path="res://assets/sprites/tileset_hex.png" id="1_rnbyy"]
+[ext_resource type="Texture2D" uid="uid://bqax8bqljdrun" path="res://assets/sprites/tileset_buildings.png" id="2_tenmg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tenmg"]
+resource_name = "tiles"
 texture = ExtResource("1_rnbyy")
+texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
 1:0/0 = 0
 0:1/0 = 0
@@ -37,7 +40,23 @@ texture = ExtResource("1_rnbyy")
 0:15/0 = 0
 1:15/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jbx8s"]
+resource_name = "buildings"
+texture = ExtResource("2_tenmg")
+texture_region_size = Vector2i(32, 32)
+0:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+0:4/0 = 0
+1:4/0 = 0
+
 [resource]
 tile_shape = 3
-tile_size = Vector2i(64, 64)
+tile_size = Vector2i(32, 32)
 sources/0 = SubResource("TileSetAtlasSource_tenmg")
+sources/1 = SubResource("TileSetAtlasSource_jbx8s")
