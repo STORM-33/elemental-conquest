@@ -1,8 +1,6 @@
 extends Node2D
 
-const TILE_SCENE = preload("res://scenes/map_gen/hex_tile.tscn")
-
-# Tile Assets
+# Tile Assets paths
 const TILESET_PATH = "res://assets/sprites/tileset_hex.png"
 const BUILDINGS_TILESET_PATH = "res://assets/sprites/tileset_buildings.png"
 
@@ -18,27 +16,31 @@ enum BiomeType {
 const BIOME_DATA = {
 	BiomeType.GRASSLAND: {
 		"name": "Grassland",
-		"top_color": Color(0.13, 0.55, 0.13),  # Darker, more natural green
+		"top_color": Color(0.13, 0.55, 0.13),
 		"tree_color": Color(0.1, 0.4, 0.1),
-		"tree_chance": 0.7
+		"tree_chance": 0.7,
+		"atlas_coords": Vector2i(0, 0)
 	},
 	BiomeType.DESERT: {
 		"name": "Desert",
-		"top_color": Color(0.65, 0.55, 0.32),  # Further darkened, very muted yellow sand
+		"top_color": Color(0.65, 0.55, 0.32),
 		"tree_color": Color(0.35, 0.25, 0.1),
-		"tree_chance": 0.2
+		"tree_chance": 0.2,
+		"atlas_coords": Vector2i(1, 0)
 	},
 	BiomeType.SNOW: {
 		"name": "Snow",
-		"top_color": Color(0.6, 0.6, 0.8),  # Slightly grayer white
+		"top_color": Color(0.6, 0.6, 0.8),
 		"tree_color": Color(0.3, 0.3, 0.3),
-		"tree_chance": 0.4
+		"tree_chance": 0.4,
+		"atlas_coords": Vector2i(2, 0)
 	},
 	BiomeType.MOUNTAINS: {
 		"name": "Mountains",
-		"top_color": Color(0.2, 0.22, 0.22),  # Grayish brown for mountain tops
-		"tree_color": Color(0.25, 0.2, 0.15),  # Darker trees
-		"tree_chance": 0.3
+		"top_color": Color(0.2, 0.22, 0.22),
+		"tree_color": Color(0.25, 0.2, 0.15),
+		"tree_chance": 0.3,
+		"atlas_coords": Vector2i(3, 0)
 	}
 }
 
@@ -66,25 +68,56 @@ var total_tiles = 0
 @export var snow_coverage := 0.25
 @export var grassland_coverage := 0.3
 
-# Tile grid storage
-var tile_grid = {}
-var selected_tile = null
+# Store tile data in dictionaries since we can't use custom data layers directly
+var tile_biome_data = {}  # Format: "x,y" -> BiomeType
+var tile_forest_data = {} # Format: "x,y" -> Boolean
+
+# Current selected cell
+var selected_coords = null
+
+@onready var terrain_map = $TileMapContainer/TerrainLayer
+@onready var decoration_map = $TileMapContainer/DecorationLayer
 
 func _ready():
-	# Initialize noise generators
+	# DEBUG: Check if TileSet is valid
+	if terrain_map.tile_set == null:
+		print("ERROR: TileSet is null!")
+	else:
+		print("TileSet is valid")
+		
+	# Check if the source exists in the TileSet
+	if terrain_map.tile_set != null:
+		var source_count = terrain_map.tile_set.get_source_count()
+		print("TileSet has ", source_count, " sources")
+		
+		if source_count > 0:
+			for i in range(source_count):
+				var source_id = terrain_map.tile_set.get_source_id(i)
+				print("Source ID: ", source_id)
+	
 	setup_noise()
-	
-	# Generate the map
 	generate_map()
-	
-	# Debug output
 	print("Map generation complete. Tile count: ", total_tiles)
+
+func input_handler_setup():
+	# We'll use a simplified approach with _input for tile selection
+	pass
+
+func _input(event):
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		# Convert mouse position to map coordinates
+		var mouse_pos = get_global_mouse_position()
+		var map_pos = terrain_map.local_to_map(terrain_map.to_local(mouse_pos))
+		
+		# Check if map_pos is valid
+		if map_pos.x >= 0 and map_pos.x < map_size.x and map_pos.y >= 0 and map_pos.y < map_size.y:
+			tile_selected(map_pos)
 
 func setup_noise():
 	# Main terrain noise
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	noise.seed = randi()
-	noise.frequency = 0.08  # Lower frequency for broader patterns
+	noise.frequency = 0.08
 	
 	# Moisture noise affects biome selection
 	moisture_noise.noise_type = FastNoiseLite.TYPE_PERLIN
@@ -109,10 +142,10 @@ func setup_noise():
 
 func get_biome_at(x: int, y: int) -> int:
 	# Get base noise values
-	var base_elevation = (noise.get_noise_2d(x, y) + 1) * 0.5  # 0 to 1
-	var moisture = (moisture_noise.get_noise_2d(x, y) + 1) * 0.5  # 0 to 1
-	var base_temperature = (temperature_noise.get_noise_2d(x, y) + 1) * 0.5  # 0 to 1
-	var blend_factor = (biome_blend_noise.get_noise_2d(x, y) + 1) * 0.5  # For biome blending
+	var base_elevation = (noise.get_noise_2d(x, y) + 1) * 0.5
+	var moisture = (moisture_noise.get_noise_2d(x, y) + 1) * 0.5
+	var base_temperature = (temperature_noise.get_noise_2d(x, y) + 1) * 0.5
+	var blend_factor = (biome_blend_noise.get_noise_2d(x, y) + 1) * 0.5
 	
 	# Apply temperature-elevation relationship (higher = colder)
 	var elevation_temp_factor = 0.4 * pow(base_elevation, 1.5)
@@ -173,14 +206,9 @@ func get_biome_at(x: int, y: int) -> int:
 	return BiomeType.GRASSLAND
 
 func generate_map():
-	# Clear any existing tiles
-	if $TileContainer:
-		for child in $TileContainer.get_children():
-			child.queue_free()
-	else:
-		var tile_container = Node2D.new()
-		tile_container.name = "TileContainer"
-		add_child(tile_container)
+	# Clear the TileMaps
+	terrain_map.clear()
+	decoration_map.clear()
 	
 	# Reset biome counts
 	for biome in BiomeType.values():
@@ -189,53 +217,32 @@ func generate_map():
 	# Calculate total tiles
 	total_tiles = map_size.x * map_size.y
 	
-	# Hex grid dimensions
-	var hex_width = 36  # Fixed width between centers
-	var hex_height = 32  # Fixed height between centers
-	
-	# Offset to center the map
-	var start_x = 50
-	var start_y = 50
-	
-	# Generate tiles
+	# Generate map using TileMap
 	for y in range(map_size.y):
 		for x in range(map_size.x):
-			# Create tile instance
-			var tile = TILE_SCENE.instantiate()
-			$TileContainer.add_child(tile)
-			
-			# Calculate position with offset for odd rows
-			var pos_x = start_x + x * hex_width
-			var pos_y = start_y + y * hex_height
-			
-			# Offset odd rows
-			if y % 2 == 1:
-				pos_x += hex_width / 2
-			
-			tile.position = Vector2(pos_x, pos_y)
-			tile.grid_position = Vector2i(x, y)
-			
-			# Store in grid
-			if not tile_grid.has(y):
-				tile_grid[y] = {}
-			tile_grid[y][x] = tile
-			
 			# Determine biome and set properties
 			var biome_type = get_biome_at(x, y)
 			var biome = BIOME_DATA[biome_type]
 			biome_counts[biome_type] += 1
-			tile.set_biome(biome)
 			
-			# Show coordinates for debugging
-			if tile.has_node("Label"):
-				var label = tile.get_node("Label")
-				label.visible = false  # Set to true for debugging
-				label.text = str(x) + "," + str(y)
+			# Store biome type in our dictionary
+			var key = "%d,%d" % [x, y]
+			tile_biome_data[key] = biome_type
+			
+			# Set the base terrain tile
+			terrain_map.set_cell(Vector2i(x, y), 0, biome.atlas_coords)
+			
+			# Add forest decoration based on chance
+			var has_forest = randf() < biome.tree_chance
+			tile_forest_data[key] = has_forest
+			
+			# If has forest, add forest tile to decoration map
+			if has_forest:
+				# Assuming forest decoration is at 0,1 in the tileset
+				decoration_map.set_cell(Vector2i(x, y), 0, Vector2i(0, 1))
 	
 	# Position camera to see the whole map
-	var map_width = map_size.x * hex_width
-	var map_height = map_size.y * hex_height
-	$Camera2D.position = Vector2(start_x + map_width/2, start_y + map_height/2)
+	$Camera2D.position = terrain_map.map_to_local(Vector2i(map_size.x / 2, map_size.y / 2))
 	
 	# Print biome distribution statistics
 	print("Biome Distribution:")
@@ -245,20 +252,25 @@ func generate_map():
 		var percentage = (float(count) / total_tiles) * 100
 		print("%s: %d tiles (%.1f%%)" % [biome_name, count, percentage])
 
-func tile_selected(tile):
-	# Handle tile selection
-	if selected_tile:
-		# Deselect previous tile if needed
-		pass
+func tile_selected(cell_coords):
+	# Store selected coordinates
+	selected_coords = cell_coords
 	
-	selected_tile = tile
-	print("Tile selected: ", tile.grid_position, " Type: ", tile.tile_type)
+	# Get biome type from our dictionary
+	var key = "%d,%d" % [cell_coords.x, cell_coords.y]
+	var biome_type = tile_biome_data.get(key, BiomeType.GRASSLAND) # Default to grassland if not found
+	var has_forest = tile_forest_data.get(key, false)
+	
+	# Visual feedback for selection (could add a highlight tile later)
+	print("Tile selected: ", cell_coords, " Biome Type: ", BIOME_DATA[biome_type].name)
 	
 	# Show UI info panel
 	if has_node("UI/TileInfo"):
 		var info_panel = get_node("UI/TileInfo")
 		info_panel.visible = true
 		if info_panel.has_node("BiomeLabel"):
-			info_panel.get_node("BiomeLabel").text = "Biome: " + tile.tile_type.capitalize()
+			info_panel.get_node("BiomeLabel").text = "Biome: " + BIOME_DATA[biome_type].name
 		if info_panel.has_node("CoordLabel"):
-			info_panel.get_node("CoordLabel").text = "Coord: " + str(tile.grid_position)
+			info_panel.get_node("CoordLabel").text = "Coord: " + str(cell_coords)
+		if info_panel.has_node("ForestLabel"):
+			info_panel.get_node("ForestLabel").text = "Forest: " + ("Yes" if has_forest else "No")
